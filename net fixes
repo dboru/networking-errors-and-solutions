@@ -2,4 +2,27 @@
   sudo nano /etc/resolvconf/resolv.conf.d/tail 
   then append "nameserver 8.8.8.8" without quote
 2. compiling linux kernel (mptcp) (64 bit)
+    2.1. Install requirements
+       sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc flex libelf-dev bison
+   2.2. copy old config 
+        cp /boot/config-$(uname -r) .config
+   2.3 clone mptcp source from 
+    git clone --depth=1 git://github.com/multipath-tcp/mptcp.git
+  2.4. Configure the kernel
+    configure the Kernel by doing make xconfig or make menuconfig and enable MultiPath TCP:
+    enable MPTCP protocol (Networking support->Networking options->TCP/IP networking->MPTCP protocol (MPTCP)
+    If you want to use the Linked Increase Algorithm (LIA) Congestion Control, that guarantees fairness across a shared bottleneck, you have to enable Networking support->Networking options->TCP: advanced congestion control->MPTCP Linked Increase. To enable it as the default congestion control, you should also enable it in "Default TCP congestion control", or you just type echo 'lia' > /proc/sys/net/ipv4/tcp_congestion_control in the running Kernel. Other options are "Opportunistic Linked Increase (olia)", "WVEGAS CONGESTION CONTROL (wvegas)" or "BALIA CONGESTION CONTROL (balia)".
+    Choose a path-manager, by enabling "MPTCP: advanced path-manager control". More info can be found here.
+    enable Policy-Routing (Networking support->Networking options->IP: advanced router->IP: policy routing (IP_MULTIPLE_TABLES)) to correctly configure your routing tables (see below).
+  2.5 Install modules 
+     sudo make modules_install
+ 2.6. Install kernel 
+      sudo make install 
+ 2.7. Update grub (optional)
+      sudo update-grub
+ 2.8. Reboot and choose the mptcp kernel
+  
+
+You have to correctly configure your routing table, as in https://multipath-tcp.org/pmwiki.php/Users/ConfigureRouting
+
    
