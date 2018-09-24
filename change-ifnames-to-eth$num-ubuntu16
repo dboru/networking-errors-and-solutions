@@ -1,0 +1,16 @@
+Changing Network Interfaces name Ubuntu 16.04
+
+On Ubuntu 16.04.1 LTS
+
+Edit your /etc/default/grub changing the line from
+
+GRUB_CMDLINE_LINUX=""
+to
+
+GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"
+and, finally:
+
+$ sudo update-grub
+and reboot your system:
+
+$ sudo reboot
