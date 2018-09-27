@@ -1,0 +1,43 @@
+#!/bin/sh
+# A script for setting up routing tables for MPTCP in the N950.
+
+# Copy this script into /etc/network/if-up.d/
+
+set -e
+
+env > /etc/network/if_up_env
+
+if [ "$IFACE" = lo -o "$MODE" != start ]; then
+        exit 0
+fi
+
+if [ -z $IFACE ]; then
+        exit 0
+fi
+
+if [ "$IFACE" = eth2 ] ; then
+    echo "$IFACE  $DHCP4_IP_ADDRESS dhcpup " >> /var/log/testlog.log
+
+     ip rule add from 10.10.7.20 table 3
+     ip route add 10.10.7.0/24 dev eth2 scope link table 3
+     ip route add default via 10.10.7.11 dev eth2 table 3
+
+fi
+
+if [ "$IFACE" = eth1 ] ; then
+    echo "$IFACE  $DHCP4_IP_ADDRESS dhcpup " >> /var/log/testlog.log
+
+     ip rule add from 10.10.6.20 table 2
+     ip route add 10.10.6.0/24 dev eth1 scope link table 2
+     ip route add default via 10.10.6.11 dev eth1 table 2
+
+fi
+
+if [ "$IFACE" = eth0 ] ; then
+    echo "$IFACE  $DHCP4_IP_ADDRESS dhcpup " >> /var/log/testlog.log
+
+     ip rule add from 10.10.5.20 table 1
+     ip route add 10.10.5.0/24 dev eth0 scope link table 1
+     ip route add default via 10.10.5.11 dev eth0 table 1
+
+fi
