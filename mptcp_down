@@ -1,0 +1,29 @@
+#!/bin/sh
+# A script for setting up routing tables for MPTCP in the N950.
+
+# Copy this script into /etc/network/if-post-down.d/
+
+set -e
+
+env > /etc/network/if_down_env
+
+if [ "$IFACE" = lo -o "$MODE" != stop ]; then
+        exit 0
+fi
+
+echo "$IFACE"
+
+if [ "$IFACE" = eth0 ]; then
+     ip rule del table 1
+     ip route flush table 1
+fi
+
+if [ "$IFACE" = eth1 ]; then
+     ip rule del table 2
+     ip route flush table 2
+fi
+
+if [ "$IFACE" = eth2 ]; then
+     ip rule del table 3
+     ip route flush table 3
+fi
