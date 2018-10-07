@@ -1,0 +1,4 @@
+select column next to last column 
+
+
+cat mpclnt_iperf.txt | awk '{print $(NF-1)}' > mpclnt 
